@@ -7,7 +7,7 @@ date: 2023-08-12 00:00:00 -0000
 
 # Static Observer
 
-Recently I have been working on a streaming API. The user is able to define a set of streams, each with their own functionality and can link the streams together. 
+Recently I have been working on a streaming API. The user is able to define a set of streams, each with their own functionality, and can link the streams together. 
 An example could be as follows. 
 
 Source -> PreprocessingStream -> ProcessingStream -> Sink
@@ -21,8 +21,8 @@ e=>end: Sink
 
 st->op->op2->e
 ``` -->
-The observer pattern provides a mechanism to link streams together. Each stream could then be both an observer, a subject or both. A stream could observe the previous stream, then do its own task, and then notify all the streams that are regestered to it. 
-The traditional observer pattern relies dynamic polymorphism, however I already know what stream structure looks like at compile time, so i want to implement a static version of the observer pattern.
+The observer pattern provides a mechanism to link streams together. Each stream could then be an observer, a subject or both. A stream could observe the previous stream, then do its own task, and then notify all the streams that are regestered to it. 
+The traditional observer pattern relies dynamic polymorphism, however I already know what the stream structure looks like at compile time, so i want to implement a static version of the observer pattern.
 
 Firstly let us have a look at the dynamic version:
 ```cpp
@@ -73,8 +73,6 @@ int main()
     subject.notify();
 }
 ```
-
-For the static version we have to find a way to replace the vector of base pointers with something that can store different types statically.
 
 Firstly lets have a look at how we are going to implement the Subject class. 
 
