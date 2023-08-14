@@ -84,7 +84,7 @@ struct Subject
     template<typename... T>
     auto attach(T&& ...observer)
     {
-        return AttatchType<decltype(std::make_tuple(std::forward<T>(observer)...))>{std::make_tuple(std::forward<T>(observer)...)};
+        return AttatchType{std::make_tuple(std::forward<T>(observer)...)};
     }
 };
 ```
