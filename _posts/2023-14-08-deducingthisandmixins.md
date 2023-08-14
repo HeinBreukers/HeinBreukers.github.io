@@ -76,6 +76,9 @@ Let's say we now want to access the notify method from the base class, we want t
 
 class Base
 {
+    template<typename... T>
+    auto attach(T&& ...observer);
+
     void GenericNotifyMethod()
     {
         auto data = this->GetData();
@@ -86,13 +89,13 @@ class Base
 
 class MQTTSubscriber: public Base
 {
-    int Base.GetData();
+    int GetData();
 };
 
 class ShmemSubscriber: public Base
 {
 
-    int Base.GetData();
+    int GetData();
 
 };
 ```
