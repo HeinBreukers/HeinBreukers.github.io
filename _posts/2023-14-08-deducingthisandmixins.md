@@ -27,9 +27,9 @@ struct Subject
 };
 ```
 
-The subject class here is kind of useless, why don't we just construct the AttachType? The reason is that the subject class might have some functionality we want to use, for example the subject might be an MQTT subscriber, and whenever it receives data it should be relayed to the attached observers.
+The Subject class here is kind of useless, why don't we just construct the AttachType? The reason is that the subject class might have some functionality we want to use, for example the subject might be an MQTT subscriber, and whenever it receives data it should be relayed to the attached observers.
 
-In the example above there is no way the subject can call notify, since the AttatchType is a completely different type. The solution to this is Mixins an would look like this:
+In the example above there is no way the subject can call notify, since the AttatchType is a completely different type. The solution to this is Mixins and would look like this:
 
 ```cpp
 template<typename Base, typename... T>
@@ -96,7 +96,7 @@ class ShmemSubscriber: public Base
 
 };
 ```
-This is traditionally done with a virtual method where the AttachType would override it, or it is done statically through the use of CRTP. Since we set out on a goal to do everything at compile time, we will use try to use CRTP. The question now is, how do you combine Mixins and CRTP? Does it even work? Let's have a look at CRTP:
+This is traditionally done with a virtual method where the derived type would override it, or it is done statically through the use of CRTP. Since we set out on a goal to do everything at compile time, we will try to use CRTP. The question now is, how do you combine Mixins and CRTP? Does it even work? Let's have a look at CRTP:
 
 ```cpp
 template<typename Derived>
