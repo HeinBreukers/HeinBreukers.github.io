@@ -37,7 +37,7 @@ struct AttatchType: public Base
 {
     AttatchType(Base base, T... observers): 
     Base(base),
-    m_observer(observers...)
+    m_observer(std::make_tuple(observers...))
     {}
 
     void notify(int in)
