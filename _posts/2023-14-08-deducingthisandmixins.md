@@ -119,7 +119,7 @@ struct Stream
     }
 };
 ```
-The above code already has an issue, but let's make it more apparent by adding the method update to Stream. It calls functions from the derived mixin classes which is not possible. In the above example there is a bug in the attach method, it will always return a type AttachType<Stream,T...> and never for example AttachType<Process\<Stream>,T...>.
+The above code already has an issue, but let's make it more apparent by adding the method update to Stream. It calls functions from the derived mixin classes which is not possible. In the above example there is a bug, the type of *this is always Stream. For example the attach method will always return a type AttachType<Stream,T...> and never for example AttachType<Process\<Stream>,T...>.
 ```cpp
 struct Stream
 {
