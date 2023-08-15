@@ -119,7 +119,7 @@ struct Stream
     }
 };
 ```
-The above code already has an issue, but let's make it more apparent by adding the method update to Stream. It calls functions from the derived mixin classes which is not possible. In the above example there is a bug in the attach method, it will always return a type AttachType<Stream,T...> and never for example AttachType<Process<Stream>,T...>.
+The above code already has an issue, but let's make it more apparent by adding the method update to Stream. It calls functions from the derived mixin classes which is not possible. In the above example there is a bug in the attach method, it will always return a type AttachType<Stream,T...> and never for example AttachType<Process\<Stream>,T...>.
 ```cpp
 struct Stream
 {
@@ -150,7 +150,7 @@ struct Stream
 ```
 ### CRTP
 
-Calling derived methods from the base class is traditionally done with a virtual method where the derived type would override it. It can also be done statically through the use of CRTP. Since we set out on a goal to do everything at compile time, we will try to use CRTP. The question now is, how do you combine Mixins and CRTP? Does it even work? Let's have a look at CRTP:
+Calling derived methods from the base class is traditionally done with virtual methods where the derived type would override it. It can also be done statically through the use of CRTP. Since we set out on a goal to do everything at compile time, we will try to use CRTP. The question now is, how do you combine Mixins and CRTP? Does it even work? Let's have a look at CRTP:
 
 ```cpp
 template<typename Derived>
