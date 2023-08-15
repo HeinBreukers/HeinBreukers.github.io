@@ -69,37 +69,88 @@ subject.notify(1);
 ```
 We can still access the base after we constructed the mixin in the attach method.
 
-### CRTP
+### Extra Mixins 
 
-Let's say we now want to access the notify method from the base class, we want to write a generic method that notifies all observers if we receive a message. This way we can use the same method for different subject types . Example:
+Below is shown a example of a potential data streaming API. A stream of type int is defined and a process is added, after that an observer is attached to that stream and the stream is attached to the source.
+
 ```cpp
-
-class Base
-{
-    template<typename... T>
-    auto attach(T&& ...observer);
-
-    void GenericNotifyMethod()
+auto str = Stream<int>()
+    .Process([](int in) -> int
     {
-        auto data = this->GetData();
-        this->notify(data);
+        //doProcess
+    })
+Observer observer;
+auto attachedStr = str.attach(observer);
+source.attach(attachedStr);
+```
+Now for example this type of process might not always be the correct one, so we define and additional one, so we can also do this:
+
+```cpp
+auto str = Stream<int>()
+    .DifferentProcess([](int in) -> int
+    {
+        //doProcess
+    })
+Observer observer;
+auto attachedStr = str.attach(observer);
+source.attach(attachedStr);
+```
+Luckily this is all possible using Mixins, we can mix and match components and add them together.
+```cpp
+struct Stream
+{
+
+    template<typename T>
+    auto Process(T&& functor)
+    {
+        return Process{*this, std::forward<T>(functor)};
     }
 
-};
+    template<typename T>
+    auto DifferentProcess(T&& functor)
+    {
+        return DifferentProcess{*this, std::forward<T>(functor)};
+    }
 
-class MQTTSubscriber: public Base
-{
-    int GetData();
-};
-
-class ShmemSubscriber: public Base
-{
-
-    int GetData();
-
+    template<typename... T>
+    auto attach(T&& ...observer)
+    {
+        return AttatchType{*this, std::forward<T>(observer)...};
+    }
 };
 ```
-This is traditionally done with a virtual method where the derived type would override it, or it is done statically through the use of CRTP. Since we set out on a goal to do everything at compile time, we will try to use CRTP. The question now is, how do you combine Mixins and CRTP? Does it even work? Let's have a look at CRTP:
+The above code already has an issue, but let's make it more apparent by adding the method update to Stream. It calls functions from the derived mixin classes which is not possible. In the above example there is a bug in the attach method, it will always return a type AttachType<Stream,T...> and never for example AttachType<Process<Stream>,T...>.
+```cpp
+struct Stream
+{
+    void update(int in)
+    {
+        int out = this->process(in);
+        this->notify(out);
+    }
+
+    template<typename T>
+    auto Process(T&& functor)
+    {
+        return Process{*this, std::forward<T>(functor)};
+    }
+
+    template<typename T>
+    auto DifferentProcess(T&& functor)
+    {
+        return DifferentProcess{*this, std::forward<T>(functor)};
+    }
+
+    template<typename... T>
+    auto attach(T&& ...observer)
+    {
+        return AttatchType{*this, std::forward<T>(observer)...};
+    }
+};
+```
+### CRTP
+
+Calling derived methods from the base class is traditionally done with a virtual method where the derived type would override it. It can also be done statically through the use of CRTP. Since we set out on a goal to do everything at compile time, we will try to use CRTP. The question now is, how do you combine Mixins and CRTP? Does it even work? Let's have a look at CRTP:
 
 ```cpp
 template<typename Derived>
@@ -123,7 +174,11 @@ class Derived: public Base<Derived<???>>
 ```
 Derived takes a Base class as a template argument and inherits the templated Base class. But the Base class has to take the Derived class as a template argument. But the Derived class takes a base class as a template argument and so on and so on. This solution would result in an infinite loop of template arguments. 
 
-The Mixin derived class takes the base class as a template argument, the CRTP base class takes the derived class as a template argument, this is a circular dependency.
+The Mixin derived class takes the base class as a template argument, the CRTP base class takes the derived class as a template argument, this is a circular dependency:
+
+```cpp
+Derived<CRTPBase<Derived<CRTPBase<Derived<CRTPBase<.......>>>>>>
+```
 
 ### Deducing this to the rescue
 
@@ -133,11 +188,9 @@ C++ 23 introduces deducing this, which means the code could look as follows:
 
 class Base
 {
-    int GetData();
-
     template <typename Self>
-    void notify(this Self&& self, int) {
-        auto data = GetData();
+    void update(this Self&& self, int in) {
+        auto data = self.process(in);
         self.notify(data);
     }
 };
