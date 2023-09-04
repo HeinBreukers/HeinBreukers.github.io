@@ -98,11 +98,11 @@ We create a vector of operations, and a vector of random data. Then during the b
 Since my machine is not properly setup for benchmarks, I will use quickbench to benchmark the alternatives. All benchmarks are compiled with "std = c++20", "optim = O3", "STL = libstdc++(GNU)" and a vector size of 1000. 
 The results for three different compiler versions are:
 #####Clang 15.0:
-![alt text](images/2023-03-09-cleancode...performance/clang150.png)
+![alt text](https://raw.githubusercontent.com/HeinBreukers/HeinBreukers.github.io/master/_posts/images/2023-03-09-cleancode...performance/clang150.png)
 #####GCC 12.2:
-![alt text](images/2023-03-09-cleancode...performance/gcc122.png)
+![alt text](https://raw.githubusercontent.com/HeinBreukers/HeinBreukers.github.io/master/_posts/images/2023-03-09-cleancode...performance/gcc122.png)
 #####GCC 9.5:
-![alt text](images/2023-03-09-cleancode...performance/gcc95.png)
+![alt text](https://raw.githubusercontent.com/HeinBreukers/HeinBreukers.github.io/master/_posts/images/2023-03-09-cleancode...performance/gcc95.png)
 
 For Clang 15.0 and GCC 12.2 the virtual method alternative is the clear loser. For GCC 9.5 the variant performs similarly to the virtual implementation, why is discussed [here](https://www.reddit.com/r/cpp/comments/kst2pu/with_stdvariant_you_choose_either_performance_or/). 
 
