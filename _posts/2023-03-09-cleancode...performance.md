@@ -98,15 +98,15 @@ We create a vector of operations, and a vector of random data. Then during the b
 Since my machine is not properly setup for benchmarks, I will use quickbench to benchmark the alternatives. All benchmarks are compiled with "std = c++20", "optim = O3", "STL = libstdc++(GNU)" and a vector size of 1000. 
 The results for three different compiler versions are:
 
-#####Clang 15.0:
+####Clang 15.0:
 
 ![alt text](https://raw.githubusercontent.com/HeinBreukers/HeinBreukers.github.io/master/_posts/images/2023-03-09-cleancode...performance/clang150.png)
 
-#####GCC 12.2:
+####GCC 12.2:
 
 ![alt text](https://raw.githubusercontent.com/HeinBreukers/HeinBreukers.github.io/master/_posts/images/2023-03-09-cleancode...performance/gcc122.png)
 
-#####GCC 9.5:
+####GCC 9.5:
 
 ![alt text](https://raw.githubusercontent.com/HeinBreukers/HeinBreukers.github.io/master/_posts/images/2023-03-09-cleancode...performance/gcc95.png)
 
